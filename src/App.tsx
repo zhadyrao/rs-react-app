@@ -66,7 +66,7 @@ class App extends Component<object, AppState> {
     }
 
     return (
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="min-h-screen items-center justify-center">
         <SearchBar searchTerm={searchTerm} onSearch={this.handleSearch} />
         {loading && <LoadingBar />}
         {error && <div className="text-red-600 mt-4">{error}</div>}
