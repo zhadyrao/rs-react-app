@@ -11,7 +11,7 @@ class ResultsList extends Component<Props> {
     const { starships } = this.props;
 
     if (!starships || starships.length === 0) {
-      return <p className="text-gray-500">No results found.</p>;
+      return <p className="text-gray-500">No results found</p>;
     }
 
     return (
