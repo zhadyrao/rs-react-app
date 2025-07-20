@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import Card from './Card/Card.tsx';
-import type { Starship } from '../common/types.ts';
+import Card from '../Card/Card.tsx';
+import type { Starship } from '../../common/types.ts';
 
 interface Props {
   starships: Starship[];
