@@ -1,6 +1,8 @@
+import type { Starship } from '../../common/types';
 import { render, screen } from '@testing-library/react';
 import Card from './Card';
-import type { Starship } from '../../common/types';
+import { describe, expect, it } from 'vitest';
+import '@testing-library/jest-dom';
 
 describe('Card component', () => {
   const mockStarship: Starship = {

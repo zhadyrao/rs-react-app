@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import SearchBar from './components/SearchBar.tsx';
-import LoadingBar from './components/LoadingBar.tsx';
+import LoadingBar from './components/LoadingBar/LoadingBar.tsx';
 import type { Starship } from './common/types.ts';
 import ResultsList from './components/ResultsList.tsx';
 import { BASE_URL } from './common/constants.ts';
