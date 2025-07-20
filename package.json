@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "simple-git-hooks": {
-    "pre-commit": "npm run lint"
+    "pre-commit": "npm run lint",
+    "pre-push": "npm run test"
   },
   "scripts": {
     "dev": "vite",
