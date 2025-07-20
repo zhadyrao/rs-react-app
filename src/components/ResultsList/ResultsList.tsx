@@ -1,6 +1,6 @@
 import { Component } from 'react';
-import Card from './Card';
-import type { Starship } from '../common/types.ts';
+import Card from '../Card/Card.tsx';
+import type { Starship } from '../../common/types.ts';
 
 interface Props {
   starships: Starship[];
@@ -11,7 +11,7 @@ class ResultsList extends Component<Props> {
     const { starships } = this.props;
 
     if (!starships || starships.length === 0) {
-      return <p className="text-gray-500">No results found.</p>;
+      return <p className="text-gray-500">No results found</p>;
     }
 
     return (

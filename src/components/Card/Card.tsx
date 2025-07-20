@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import type { Starship } from '../common/types.ts';
+import type { Starship } from '../../common/types.ts';
 
 interface Props {
   starship: Starship;

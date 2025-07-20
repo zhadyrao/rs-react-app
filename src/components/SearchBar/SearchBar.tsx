@@ -34,9 +34,10 @@ class SearchBar extends Component<Props, State> {
           onChange={this.handleChange}
           placeholder="Search Starships..."
           className="border px-4 py-2 flex-1"
+          role="textbox"
         />
         <button type="submit" className="bg-red-500 text-white px-4 py-2">
-          Search
+          Search item
         </button>
       </form>
     );

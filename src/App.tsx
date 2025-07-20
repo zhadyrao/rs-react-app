@@ -1,9 +1,8 @@
 import { Component } from 'react';
-import SearchBar from './components/SearchBar.tsx';
-import LoadingBar from './components/LoadingBar.tsx';
+import SearchBar from './components/SearchBar/SearchBar.tsx';
+import LoadingBar from './components/LoadingBar/LoadingBar.tsx';
 import type { Starship } from './common/types.ts';
-import ResultsList from './components/ResultsList.tsx';
-import { BASE_URL } from './common/constants.ts';
+import ResultsList from './components/ResultsList/ResultsList.tsx';
 
 interface AppState {
   searchTerm: string;
@@ -29,8 +28,8 @@ class App extends Component<object, AppState> {
   fetchData = (term: string = '') => {
     const trimmed = term.trim();
     const url = trimmed
-      ? `${BASE_URL}?name=${trimmed}`
-      : `${BASE_URL}?expanded=true`;
+      ? `${'https://www.swapi.tech/api/starships'}?name=${trimmed}`
+      : `${'https://www.swapi.tech/api/starships'}?expanded=true`;
 
     this.setState({ loading: true, error: null });
 
