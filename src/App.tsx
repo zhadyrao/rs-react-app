@@ -1,90 +1,79 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import SearchBar from './components/SearchBar/SearchBar.tsx';
 import LoadingBar from './components/LoadingBar/LoadingBar.tsx';
-import type { Starship } from './common/types.ts';
 import ResultsList from './components/ResultsList/ResultsList.tsx';
+import type { Starship } from './common/types.ts';
 
-interface AppState {
-  searchTerm: string;
-  starships: Starship[];
-  loading: boolean;
-  error: string | null;
-  throwError: boolean;
-}
+const App: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState<string>(
+    () => localStorage.getItem('searchTerm') || ''
+  );
+  const [starships, setStarships] = useState<Starship[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [throwError, setThrowError] = useState<boolean>(false);
 
-class App extends Component<object, AppState> {
-  state: AppState = {
-    searchTerm: localStorage.getItem('searchTerm') || '',
-    starships: [],
-    loading: false,
-    error: null,
-    throwError: false,
-  };
+  useEffect(() => {
+    handleSearch(searchTerm);
+  }, []);
 
-  componentDidMount() {
-    this.handleSearch(this.state.searchTerm);
-  }
-
-  fetchData = (term: string = '') => {
+  const fetchData = async (term: string = ''): Promise<void> => {
     const trimmed = term.trim();
     const url = trimmed
-      ? `${'https://www.swapi.tech/api/starships'}?name=${trimmed}`
-      : `${'https://www.swapi.tech/api/starships'}?expanded=true`;
+      ? `https://www.swapi.tech/api/starships?name=${trimmed}`
+      : `https://www.swapi.tech/api/starships?expanded=true`;
 
-    this.setState({ loading: true, error: null });
+    setLoading(true);
+    setError(null);
 
-    fetch(url)
-      .then(async (res) => {
-        if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
-        return res.json();
-      })
-      .then((data) => {
-        this.setState({
-          starships: trimmed ? data.result : data.results,
-          loading: false,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        this.setState({ error: err.message, loading: false });
-      });
-  };
-
-  handleSearch = (newTerm: string) => {
-    localStorage.setItem('searchTerm', newTerm.trim());
-    this.setState({ searchTerm: newTerm }, () => {
-      this.fetchData(newTerm);
-    });
-  };
-
-  render() {
-    const { searchTerm, starships, loading, error, throwError } = this.state;
-
-    if (throwError) {
-      throw new Error('Тестовая ошибка в render()!');
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+      const data: { result?: Starship[]; results?: Starship[] } =
+        await res.json();
+      setStarships(trimmed ? (data.result ?? []) : (data.results ?? []));
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
+    } finally {
+      setLoading(false);
     }
+  };
 
-    return (
-      <div className="min-h-screen items-center justify-center">
-        <SearchBar searchTerm={searchTerm} onSearch={this.handleSearch} />
-        {loading && <LoadingBar />}
-        {error && <div className="text-red-600 mt-4">{error}</div>}
-        {!loading && !error && <ResultsList starships={starships} />}
-        <button
-          type="button"
-          onClick={() => this.setState({ throwError: true })}
-          style={{
-            marginTop: '1rem',
-            backgroundColor: 'tomato',
-            color: 'white',
-            padding: '0.5rem',
-          }}
-        >
-          Test Error
-        </button>
-      </div>
-    );
+  const handleSearch = (newTerm: string): void => {
+    const trimmed = newTerm.trim();
+    localStorage.setItem('searchTerm', trimmed);
+    setSearchTerm(trimmed);
+    fetchData(trimmed);
+  };
+
+  if (throwError) {
+    throw new Error('Тестовая ошибка в render()!');
   }
-}
+
+  return (
+    <div className="min-h-screen items-center justify-center">
+      <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+      {loading && <LoadingBar />}
+      {error && <div className="text-red-600 mt-4">{error}</div>}
+      {!loading && !error && <ResultsList starships={starships} />}
+      <button
+        type="button"
+        onClick={() => setThrowError(true)}
+        style={{
+          marginTop: '1rem',
+          backgroundColor: 'tomato',
+          color: 'white',
+          padding: '0.5rem',
+        }}
+      >
+        Test Error
+      </button>
+    </div>
+  );
+};
 
 export default App;

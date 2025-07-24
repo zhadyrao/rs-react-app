@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 
 interface Props {
@@ -6,42 +6,33 @@ interface Props {
   onSearch: (term: string) => void;
 }
 
-interface State {
-  input: string;
-}
+const SearchBar: React.FC<Props> = ({ searchTerm, onSearch }) => {
+  const [input, setInput] = useState<string>(searchTerm || '');
 
-class SearchBar extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { input: props.searchTerm || '' };
-  }
-
-  handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ input: e.target.value });
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
   };
 
-  handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    this.props.onSearch(this.state.input);
+    onSearch(input);
   };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit} className="">
-        <input
-          type="text"
-          value={this.state.input}
-          onChange={this.handleChange}
-          placeholder="Search Starships..."
-          className="border px-4 py-2 flex-1"
-          role="textbox"
-        />
-        <button type="submit" className="bg-red-500 text-white px-4 py-2">
-          Search item
-        </button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit} className="">
+      <input
+        type="text"
+        value={input}
+        onChange={handleChange}
+        placeholder="Search Starships..."
+        className="border px-4 py-2 flex-1"
+        role="textbox"
+      />
+      <button type="submit" className="bg-red-500 text-white px-4 py-2">
+        Search item
+      </button>
+    </form>
+  );
+};
 
 export default SearchBar;
