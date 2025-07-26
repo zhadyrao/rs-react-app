@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary.tsx';
+import { BrowserRouter } from 'react-router-dom';
 
 const container = document.getElementById('root');
 
@@ -12,7 +13,9 @@ if (!container) {
 const root = createRoot(container);
 
 root.render(
-  <ErrorBoundary>
-    <App />
-  </ErrorBoundary>
+  <BrowserRouter>
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </BrowserRouter>
 );
