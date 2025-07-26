@@ -28,7 +28,7 @@ const SearchBar: React.FC<Props> = ({ searchTerm, onSearch }) => {
         className="border px-4 py-2 flex-1"
         role="textbox"
       />
-      <button type="submit" className="bg-red-500 text-white px-4 py-2">
+      <button type="submit" className="text-red-500 px-4 py-2">
         Search item
       </button>
     </form>

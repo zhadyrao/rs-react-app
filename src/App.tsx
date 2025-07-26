@@ -3,15 +3,14 @@ import SearchBar from './components/SearchBar/SearchBar.tsx';
 import LoadingBar from './components/LoadingBar/LoadingBar.tsx';
 import ResultsList from './components/ResultsList/ResultsList.tsx';
 import type { Starship } from './common/types.ts';
+import useLocalStorage from './components/utils/useLocalStorage.tsx';
 
 const App: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState<string>(
-    () => localStorage.getItem('searchTerm') || ''
-  );
   const [starships, setStarships] = useState<Starship[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [throwError, setThrowError] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useLocalStorage('searchTerm', '');
 
   useEffect(() => {
     handleSearch(searchTerm);
@@ -45,7 +44,6 @@ const App: React.FC = () => {
 
   const handleSearch = (newTerm: string): void => {
     const trimmed = newTerm.trim();
-    localStorage.setItem('searchTerm', trimmed);
     setSearchTerm(trimmed);
     fetchData(trimmed);
   };
