@@ -4,12 +4,18 @@ import SearchBar from '../SearchBar/SearchBar.tsx';
 import { useEffect, useState } from 'react';
 import useLocalStorage from '../utils/useLocalStorage.tsx';
 import LoadingBar from '../LoadingBar/LoadingBar.tsx';
+import Pagination from '../utils/Pagination.tsx';
+import type { StarshipsResponse } from '../utils/types.ts';
 
 const ResultsList = () => {
   const [starships, setStarships] = useState<Starship[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useLocalStorage('searchTerm', '');
+  const [data, setData] = useState<StarshipsResponse | null>(null);
+  const [url, setUrl] = useState<string>(
+    'https://www.swapi.tech/api/starships?expanded=true'
+  );
 
   useEffect(() => {
     handleSearch(searchTerm);
@@ -17,18 +23,14 @@ const ResultsList = () => {
 
   const fetchData = async (term: string = ''): Promise<void> => {
     const trimmed = term.trim();
-    const url = trimmed
-      ? `https://www.swapi.tech/api/starships?name=${trimmed}`
-      : `https://www.swapi.tech/api/starships?expanded=true`;
-
     setLoading(true);
     setError(null);
 
     try {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
-      const data: { result?: Starship[]; results?: Starship[] } =
-        await res.json();
+      const data = await res.json();
+      setData(data);
       setStarships(trimmed ? (data.result ?? []) : (data.results ?? []));
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -60,6 +62,15 @@ const ResultsList = () => {
           <Card key={index} starship={starship} />
         ))}
       </div>
+      {data?.next ? (
+        <Pagination
+          next={data.next}
+          previous={data.previous}
+          onPageChange={(newUrl) => setUrl(newUrl)}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
