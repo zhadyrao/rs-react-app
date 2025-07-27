@@ -1,22 +1,34 @@
 interface PaginationProps {
   next: string | null;
   previous: string | null;
-  onPageChange: (url: string) => void;
+  currentPage: number;
+  onPageChange: (page: number) => void;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   next,
   previous,
+  currentPage,
   onPageChange,
 }) => (
   <div className="pagination">
     <button
       disabled={!previous}
-      onClick={() => previous && onPageChange(previous)}
+      onClick={() => onPageChange(currentPage - 1)}
+      className={
+        'bg-green-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed'
+      }
     >
       Previous
     </button>
-    <button disabled={!next} onClick={() => next && onPageChange(next)}>
+    <span>Page {currentPage}</span>
+    <button
+      disabled={!next}
+      onClick={() => onPageChange(currentPage + 1)}
+      className={
+        'bg-green-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed'
+      }
+    >
       Next
     </button>
   </div>

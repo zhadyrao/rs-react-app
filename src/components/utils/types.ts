@@ -1,7 +1,19 @@
-export interface StarshipResult {
-  uid: string;
+export interface StarshipProperties {
+  created: string;
+  edited: string;
+  consumables: string;
   name: string;
+  cargo_capacity: string;
+  films: string[];
   url: string;
+}
+
+export interface Starship {
+  properties: StarshipProperties;
+  _id: string;
+  description: string;
+  uid: string;
+  __v: number;
 }
 
 export interface StarshipsResponse {
@@ -10,5 +22,5 @@ export interface StarshipsResponse {
   total_pages: number;
   previous: string | null;
   next: string | null;
-  results: StarshipResult[];
+  results: Starship[];
 }
