@@ -4,7 +4,6 @@ export interface StarshipProperties {
   consumables: string;
   name: string;
   cargo_capacity: string;
-  films: string[];
   url: string;
 }
 
