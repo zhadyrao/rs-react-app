@@ -8,15 +8,12 @@ import { useNavigate } from 'react-router-dom';
 
 interface ResultsListProps {
   currentPage: string;
-  selectedId: string | undefined;
 }
 
-const ResultsList = ({ currentPage, selectedId }: ResultsListProps) => {
+const ResultsList = ({ currentPage }: ResultsListProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<StarshipsResponse | null>(null);
-  // const [searchParams, setSearchParams] = useSearchParams();
-  // const currentPage = parseInt(searchParams.get('page') ?? '1');
   const url = `https://www.swapi.tech/api/starships?expanded=true&limit=10&page=${currentPage}`;
   const navigate = useNavigate();
   useEffect(() => {
@@ -37,7 +34,6 @@ const ResultsList = ({ currentPage, selectedId }: ResultsListProps) => {
   }, [url]);
 
   const handlePageChange = (newPage: number) => {
-    // setSearchParams({ page: newPage.toString() });
     navigate(`/${newPage}`);
   };
 
@@ -47,10 +43,16 @@ const ResultsList = ({ currentPage, selectedId }: ResultsListProps) => {
     return <div className="text-red-600 mt-4">{error}</div>;
   }
   return (
-    <div className="w-1/2">
+    <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {data?.results.map((starship, index) => (
-          <Card key={index} starship={starship} />
+          <div
+            key={index}
+            onClick={() => navigate(`/${currentPage}/${starship.uid}`)}
+            className="cursor-pointer"
+          >
+            <Card key={index} starship={starship} />
+          </div>
         ))}
       </div>
       <Pagination
@@ -59,7 +61,6 @@ const ResultsList = ({ currentPage, selectedId }: ResultsListProps) => {
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
-      <p>{selectedId}</p>
     </div>
   );
 };
