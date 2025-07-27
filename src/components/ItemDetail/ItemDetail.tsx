@@ -20,7 +20,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({ id }) => {
         const json = await res.json();
         setData(json.result.properties);
       } catch (err: unknown) {
-        setError(err.message || 'Unknown error');
+        setError((err as Error).message);
       } finally {
         setLoading(false);
       }
