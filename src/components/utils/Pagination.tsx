@@ -1,7 +1,7 @@
 interface PaginationProps {
   next: string | null;
   previous: string | null;
-  currentPage: number;
+  currentPage: string;
   onPageChange: (page: number) => void;
 }
 
@@ -14,7 +14,7 @@ const Pagination: React.FC<PaginationProps> = ({
   <div className="pagination">
     <button
       disabled={!previous}
-      onClick={() => onPageChange(currentPage - 1)}
+      onClick={() => onPageChange(Number(currentPage) - 1)}
       className={
         'bg-green-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed'
       }
@@ -24,7 +24,7 @@ const Pagination: React.FC<PaginationProps> = ({
     <span>Page {currentPage}</span>
     <button
       disabled={!next}
-      onClick={() => onPageChange(currentPage + 1)}
+      onClick={() => onPageChange(Number(currentPage) + 1)}
       className={
         'bg-green-500 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed'
       }
