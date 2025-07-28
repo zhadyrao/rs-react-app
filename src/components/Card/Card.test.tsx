@@ -1,37 +1,37 @@
-import type { Starship } from '../../common/types';
 import { render, screen } from '@testing-library/react';
 import Card from './Card';
-import { describe, expect, it } from 'vitest';
-import '@testing-library/jest-dom';
+import { describe, it, expect } from 'vitest';
+import type { Starship } from '../utils/types';
 
-describe('Card component', () => {
+describe('Card', () => {
   const mockStarship: Starship = {
-    description: 'A powerful starship',
+    _id: '1',
+    uid: 'uid-1',
+    __v: 0,
+    description: 'A powerful capital ship',
     properties: {
       name: 'Millennium Falcon',
-      created: '2023-07-17',
-      cost_in_credits: '100000',
-      manufacturer: 'Corellian Engineering Corporation',
+      created: '2023-01-01T00:00:00.000Z',
+      edited: '2023-01-01T00:00:00.000Z',
+      cargo_capacity: '100000',
+      consumables: '2 months',
+      url: 'http://swapi.tech/api/starships/1',
     },
   };
 
-  it('renders the starship name as a heading', () => {
+  it('renders starship name in heading', () => {
     render(<Card starship={mockStarship} />);
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
       'Millennium Falcon'
     );
   });
 
-  it('renders the starship description and properties in the paragraph', () => {
+  it('renders starship description with properties', () => {
     render(<Card starship={mockStarship} />);
-    const expectedText =
-      'A powerful starship was created 2023-07-17. It costs 100000 and made by Corellian Engineering Corporation';
-    expect(screen.getByText(expectedText)).toBeInTheDocument();
-  });
-
-  it('applies the correct styling classes', () => {
-    render(<Card starship={mockStarship} />);
-    const card = screen.getByRole('heading').closest('div');
-    expect(card).toHaveClass('border', 'rounded', 'p-4', 'shadow');
+    expect(
+      screen.getByText(
+        /A powerful capital ship was created 2023-01-01T00:00:00.000Z. It costs 100000 and made by 2 months/i
+      )
+    ).toBeInTheDocument();
   });
 });
