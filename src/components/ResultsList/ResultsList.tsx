@@ -5,12 +5,17 @@ import Pagination from '../utils/Pagination.tsx';
 import type { StarshipsResponse } from '../utils/types.ts';
 import { fetchStarships } from '../utils/api.ts';
 import { useNavigate } from 'react-router-dom';
+// import {decrement, increment} from "../../features/starships/starshipSlice.ts";
+// import {useDispatch, useSelector} from "react-redux";
+// import type {RootState} from "../../store.ts";
 
 interface ResultsListProps {
   currentPage: string;
 }
 
 const ResultsList = ({ currentPage }: ResultsListProps) => {
+  // const count = useSelector((state: RootState) => state.starshipSlice.value)
+  // const dispatch = useDispatch()
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<StarshipsResponse | null>(null);
@@ -61,6 +66,21 @@ const ResultsList = ({ currentPage }: ResultsListProps) => {
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
+      {/*<div>*/}
+      {/*    <button*/}
+      {/*        aria-label="Increment value"*/}
+      {/*        onClick={() => dispatch(increment())}*/}
+      {/*    >*/}
+      {/*        Increment*/}
+      {/*    </button>*/}
+      {/*    <span>{count}</span>*/}
+      {/*    <button*/}
+      {/*        aria-label="Decrement value"*/}
+      {/*        onClick={() => dispatch(decrement())}*/}
+      {/*    >*/}
+      {/*        Decrement*/}
+      {/*    </button>*/}
+      {/*</div>*/}
     </div>
   );
 };
