@@ -1,36 +1,64 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import type {
+  Starship,
+  StarshipClientSide,
+} from '../../components/utils/types.ts';
 
-export interface CounterState {
-  value: number;
+interface StarshipsState {
+  list: StarshipClientSide[];
+  selected: Record<string, StarshipClientSide>;
+  loading: boolean;
 }
 
-const initialState: CounterState = {
-  value: 0,
+const initialState: StarshipsState = {
+  list: [],
+  selected: {},
+  loading: false,
 };
 
+export const fetchStarships = createAsyncThunk(
+  'starships/fetch',
+  async (page: string) => {
+    const res = await fetch(
+      `https://www.swapi.tech/api/starships?expanded=true&limit=10&page=${page}`
+    );
+    const data = await res.json();
+    return data.results.map((starship: Starship) => ({
+      id: String(starship.uid),
+      name: starship.properties.name,
+      description: starship.properties.created,
+    }));
+  }
+);
+
 export const starshipSlice = createSlice({
-  name: 'counter',
+  name: 'starships',
   initialState,
   reducers: {
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
+    toggleItem: (state, action: PayloadAction<StarshipClientSide>) => {
+      const { id } = action.payload;
+
+      if (state.selected[id]) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [id]: _, ...rest } = state.selected;
+        state.selected = rest;
+      } else {
+        state.selected[id] = action.payload;
+      }
     },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchStarships.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchStarships.fulfilled, (state, action) => {
+        state.list = action.payload;
+        state.loading = false;
+      });
   },
 });
 
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } =
-  starshipSlice.actions;
-
+export const { toggleItem } = starshipSlice.actions;
 export default starshipSlice.reducer;

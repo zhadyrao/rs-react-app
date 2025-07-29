@@ -40,3 +40,9 @@ export interface StarshipsResponse {
   next: string | null;
   results: Starship[];
 }
+
+export interface StarshipClientSide {
+  name: string;
+  id: string;
+  description: string;
+}

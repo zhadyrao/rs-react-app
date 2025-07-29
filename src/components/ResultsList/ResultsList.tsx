@@ -1,86 +1,72 @@
-import Card from '../Card/Card.tsx';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import LoadingBar from '../LoadingBar/LoadingBar.tsx';
-import Pagination from '../utils/Pagination.tsx';
-import type { StarshipsResponse } from '../utils/types.ts';
-import { fetchStarships } from '../utils/api.ts';
 import { useNavigate } from 'react-router-dom';
-// import {decrement, increment} from "../../features/starships/starshipSlice.ts";
-// import {useDispatch, useSelector} from "react-redux";
-// import type {RootState} from "../../store.ts";
+import { fetchStarships } from '../../features/starships/starshipSlice.ts';
+import { useAppDispatch, useAppSelector } from '../utils/hooks.ts';
 
 interface ResultsListProps {
   currentPage: string;
 }
 
 const ResultsList = ({ currentPage }: ResultsListProps) => {
-  // const count = useSelector((state: RootState) => state.starshipSlice.value)
-  // const dispatch = useDispatch()
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<StarshipsResponse | null>(null);
-  const url = `https://www.swapi.tech/api/starships?expanded=true&limit=10&page=${currentPage}`;
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [error, setError] = useState<string | null>(null);
+  // const [data, setData] = useState<StarshipsResponse | null>(null);
   const navigate = useNavigate();
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const result = await fetchStarships(url);
+  //       setData(result);
+  //       setError(null);
+  //     } catch (err) {
+  //       setError((err as Error).message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //
+  //   loadData();
+  // }, [url]);
+
+  const dispatch = useAppDispatch();
+  const { list, loading } = useAppSelector((state) => state.starshipSlice);
+
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const result = await fetchStarships(url);
-        setData(result);
-        setError(null);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    dispatch(fetchStarships(currentPage));
+  }, [dispatch]);
 
-    loadData();
-  }, [url]);
-
-  const handlePageChange = (newPage: number) => {
-    navigate(`/${newPage}`);
-  };
+  // const handlePageChange = (newPage: number) => {
+  //   navigate(`/${newPage}`);
+  // };
 
   if (loading) {
     return <LoadingBar />;
-  } else if (error) {
-    return <div className="text-red-600 mt-4">{error}</div>;
   }
+  // else if (error) {
+  //   return <div className="text-red-600 mt-4">{error}</div>;
+  // }
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {data?.results.map((starship, index) => (
+        {list?.map((starship, index) => (
           <div
             key={index}
-            onClick={() => navigate(`/${currentPage}/${starship.uid}`)}
+            onClick={() => navigate(`/${currentPage}/${starship.id}`)}
             className="cursor-pointer"
           >
-            <Card key={index} starship={starship} />
+            <p>1</p>
+            {/*<Card key={index} starship={starship} />*/}
           </div>
         ))}
       </div>
-      <Pagination
-        next={data?.next || null}
-        previous={data?.previous || null}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      />
-      {/*<div>*/}
-      {/*    <button*/}
-      {/*        aria-label="Increment value"*/}
-      {/*        onClick={() => dispatch(increment())}*/}
-      {/*    >*/}
-      {/*        Increment*/}
-      {/*    </button>*/}
-      {/*    <span>{count}</span>*/}
-      {/*    <button*/}
-      {/*        aria-label="Decrement value"*/}
-      {/*        onClick={() => dispatch(decrement())}*/}
-      {/*    >*/}
-      {/*        Decrement*/}
-      {/*    </button>*/}
-      {/*</div>*/}
+      {/*<Pagination*/}
+      {/*  next={data?.next || null}*/}
+      {/*  previous={data?.previous || null}*/}
+      {/*  currentPage={currentPage}*/}
+      {/*  onPageChange={handlePageChange}*/}
+      {/*/>*/}
     </div>
   );
 };
