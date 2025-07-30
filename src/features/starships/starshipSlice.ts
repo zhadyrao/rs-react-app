@@ -6,15 +6,19 @@ import type {
 } from '../../components/utils/types.ts';
 
 interface StarshipsState {
-  list: StarshipClientSide[];
+  starShipsList: StarshipClientSide[];
   selected: Record<string, StarshipClientSide>;
   loading: boolean;
+  next: string | null;
+  previous: string | null;
 }
 
 const initialState: StarshipsState = {
-  list: [],
+  starShipsList: [],
   selected: {},
   loading: false,
+  next: null,
+  previous: null,
 };
 
 export const fetchStarships = createAsyncThunk(
@@ -24,11 +28,16 @@ export const fetchStarships = createAsyncThunk(
       `https://www.swapi.tech/api/starships?expanded=true&limit=10&page=${page}`
     );
     const data = await res.json();
-    return data.results.map((starship: Starship) => ({
-      id: String(starship.uid),
-      name: starship.properties.name,
-      description: starship.properties.created,
-    }));
+
+    return {
+      results: data.results.map((starship: Starship) => ({
+        id: String(starship.uid),
+        name: starship.properties.name,
+        description: starship.properties.created,
+      })),
+      next: data.next,
+      previous: data.previous,
+    };
   }
 );
 
@@ -47,6 +56,9 @@ export const starshipSlice = createSlice({
         state.selected[id] = action.payload;
       }
     },
+    unselectAll: (state) => {
+      state.selected = {};
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -54,7 +66,9 @@ export const starshipSlice = createSlice({
         state.loading = true;
       })
       .addCase(fetchStarships.fulfilled, (state, action) => {
-        state.list = action.payload;
+        state.starShipsList = action.payload.results;
+        state.next = action.payload.next;
+        state.previous = action.payload.previous;
         state.loading = false;
       });
   },
