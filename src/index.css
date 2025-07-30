@@ -63,3 +63,13 @@ button:focus-visible {
     color: #747bff;
   }
 }
+
+[data-theme='dark'] {
+  --bg: #111;
+  --text: #eee;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
