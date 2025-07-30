@@ -3,8 +3,9 @@ import LoadingBar from '../LoadingBar/LoadingBar.tsx';
 import { useNavigate } from 'react-router-dom';
 import { fetchStarships } from '../../features/starships/starshipSlice.ts';
 import { useAppDispatch, useAppSelector } from '../utils/hooks.ts';
-import Pagination from '../utils/Pagination.tsx';
+import Pagination from '../Pagination/Pagination.tsx';
 import Card from '../Card/Card.tsx';
+import Flyout from '../Flyout/Flyout.tsx';
 
 interface ResultsListProps {
   currentPage: string;
@@ -47,6 +48,7 @@ const ResultsList = ({ currentPage }: ResultsListProps) => {
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
+      <Flyout />
     </div>
   );
 };

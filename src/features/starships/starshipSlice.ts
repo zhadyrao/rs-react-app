@@ -74,5 +74,5 @@ export const starshipSlice = createSlice({
   },
 });
 
-export const { toggleItem } = starshipSlice.actions;
+export const { toggleItem, unselectAll } = starshipSlice.actions;
 export default starshipSlice.reducer;
