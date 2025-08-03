@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi, afterAll } from 'vitest';
+import { describe, it, expect, vi, afterAll, afterEach } from 'vitest';
 import { ErrorBoundary } from './ErrorBoundary';
 import { Component } from 'react';
-import { afterEach } from 'node:test';
 import '@testing-library/jest-dom';
 
 class ProblemChild extends Component {

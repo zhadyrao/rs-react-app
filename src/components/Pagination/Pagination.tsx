@@ -1,6 +1,6 @@
 interface PaginationProps {
-  next: string | null;
-  previous: string | null;
+  next: string | null | undefined;
+  previous: string | null | undefined;
   currentPage: string;
   onPageChange: (page: number) => void;
 }

@@ -1,37 +1,75 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Card from './Card';
-import { describe, it, expect } from 'vitest';
-import type { Starship } from '../utils/types';
+import type { StarshipClientSide } from '../utils/types';
+import * as hooks from '../utils/hooks';
+import * as slice from '../../features/starships/starshipSlice';
 
-describe('Card', () => {
-  const mockStarship: Starship = {
-    _id: '1',
-    uid: 'uid-1',
-    __v: 0,
-    description: 'A powerful capital ship',
-    properties: {
-      name: 'Millennium Falcon',
-      created: '2023-01-01T00:00:00.000Z',
-      edited: '2023-01-01T00:00:00.000Z',
-      cargo_capacity: '100000',
-      consumables: '2 months',
-      url: 'http://swapi.tech/api/starships/1',
-    },
+vi.mock('../utils/hooks');
+vi.mock('../../features/starships/starshipSlice');
+
+describe('<Card />', () => {
+  const starship: StarshipClientSide = {
+    id: '1',
+    name: 'This is Name',
+    description: 'Description of starship',
   };
 
-  it('renders starship name in heading', () => {
-    render(<Card starship={mockStarship} />);
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
-      'Millennium Falcon'
+  const mockDispatch = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    vi.spyOn(hooks, 'useAppDispatch').mockReturnValue(mockDispatch);
+    vi.spyOn(hooks, 'useAppSelector').mockImplementation((selectorFn) =>
+      selectorFn({
+        starshipSlice: {
+          selected: {},
+        },
+      })
     );
+
+    vi.spyOn(slice, 'toggleItem').mockImplementation((payload) => ({
+      type: 'starships/toggleItem',
+      payload,
+    }));
   });
 
-  it('renders starship description with properties', () => {
-    render(<Card starship={mockStarship} />);
+  it('renders starship name and description', () => {
+    render(<Card starship={starship} />);
+
+    expect(screen.getByText('This is Name')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /A powerful capital ship was created 2023-01-01T00:00:00.000Z. It costs 100000 and made by 2 months/i
-      )
+      screen.getByText(/Description of starship was created/)
     ).toBeInTheDocument();
+  });
+
+  it('shows checkbox as checked if starship is selected', () => {
+    vi.spyOn(hooks, 'useAppSelector').mockImplementation((selectorFn) =>
+      selectorFn({
+        starshipSlice: {
+          selected: {
+            [starship.id]: starship,
+          },
+        },
+      })
+    );
+
+    render(<Card starship={starship} />);
+    const checkbox = screen.getByRole('checkbox') as HTMLInputElement;
+    expect(checkbox.checked).toBe(true);
+  });
+
+  it('dispatches toggleItem action on checkbox change', () => {
+    render(<Card starship={starship} />);
+    const checkbox = screen.getByRole('checkbox');
+
+    fireEvent.click(checkbox);
+
+    expect(slice.toggleItem).toHaveBeenCalledWith(starship);
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'starships/toggleItem',
+      payload: starship,
+    });
   });
 });

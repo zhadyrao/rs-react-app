@@ -1,31 +1,44 @@
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import Navbar from './Navbar';
+import ThemeProvider from '../ThemeContext/ThemeContext.tsx';
 
-describe('Navbar component', () => {
-  it('renders navigation links', () => {
+describe('Navbar', () => {
+  const renderWithProviders = () =>
     render(
       <MemoryRouter>
-        <Navbar />
+        <ThemeProvider>
+          <Navbar />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/home/i)).toBeInTheDocument();
-    expect(screen.getByText(/about/i)).toBeInTheDocument();
+  it('renders Home and About links', () => {
+    renderWithProviders();
+
+    expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(screen.getByText('About')).toBeInTheDocument();
   });
 
-  it('has correct link hrefs', () => {
-    render(
-      <MemoryRouter>
-        <Navbar />
-      </MemoryRouter>
-    );
+  it('renders theme select dropdown with Light and Dark options', () => {
+    renderWithProviders();
 
-    expect(screen.getByText(/home/i).closest('a')).toHaveAttribute('href', '/');
-    expect(screen.getByText(/about/i).closest('a')).toHaveAttribute(
-      'href',
-      '/about'
-    );
+    const select = screen.getByRole('combobox');
+    expect(select).toBeInTheDocument();
+
+    expect(screen.getByRole('option', { name: 'Light' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Dark' })).toBeInTheDocument();
+  });
+
+  it('can change the theme via the dropdown', () => {
+    renderWithProviders();
+
+    const select = screen.getByRole('combobox') as HTMLSelectElement;
+    expect(select.value).toBe('light');
+
+    fireEvent.change(select, { target: { value: 'dark' } });
+
+    expect(select.value).toBe('dark');
   });
 });
