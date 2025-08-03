@@ -39,6 +39,6 @@ describe('Navbar', () => {
 
     fireEvent.change(select, { target: { value: 'dark' } });
 
-    expect(select.value).toBe('dark'); // confirms UI update
+    expect(select.value).toBe('dark');
   });
 });
