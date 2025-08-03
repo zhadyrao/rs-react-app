@@ -6,6 +6,12 @@ vi.mock('../LoadingBar/LoadingBar.tsx', () => ({
   default: () => <div data-testid="loading-bar">Loading...</div>,
 }));
 
+declare global {
+  interface Global {
+    fetch: typeof fetch;
+  }
+}
+
 const mockStarshipData = {
   result: {
     properties: {
