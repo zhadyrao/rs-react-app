@@ -6,12 +6,6 @@ vi.mock('../LoadingBar/LoadingBar.tsx', () => ({
   default: () => <div data-testid="loading-bar">Loading...</div>,
 }));
 
-declare global {
-  interface Global {
-    fetch: typeof fetch;
-  }
-}
-
 const mockStarshipData = {
   result: {
     properties: {
@@ -34,7 +28,7 @@ const mockStarshipData = {
 
 describe('ItemDetail', () => {
   beforeEach(() => {
-    vi.spyOn(global, 'fetch');
+    vi.spyOn(window, 'fetch');
   });
 
   afterEach(() => {
@@ -42,7 +36,7 @@ describe('ItemDetail', () => {
   });
 
   it('renders loading bar initially', async () => {
-    vi.mocked(global.fetch).mockResolvedValueOnce({
+    vi.mocked(window.fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => mockStarshipData,
     } as Response);
@@ -53,7 +47,7 @@ describe('ItemDetail', () => {
   });
 
   it('displays starship data on successful fetch', async () => {
-    vi.mocked(global.fetch).mockResolvedValueOnce({
+    vi.mocked(window.fetch).mockResolvedValueOnce({
       ok: true,
       json: async () => mockStarshipData,
     } as Response);
@@ -68,7 +62,7 @@ describe('ItemDetail', () => {
   });
 
   it('displays error message on fetch failure (non-ok response)', async () => {
-    vi.mocked(global.fetch).mockResolvedValueOnce({
+    vi.mocked(window.fetch).mockResolvedValueOnce({
       ok: false,
     } as Response);
 
@@ -79,7 +73,7 @@ describe('ItemDetail', () => {
   });
 
   it('displays error message on fetch rejection (network error)', async () => {
-    vi.mocked(global.fetch).mockRejectedValueOnce(new Error('Network Error'));
+    vi.mocked(window.fetch).mockRejectedValueOnce(new Error('Network Error'));
 
     render(<ItemDetail id="1" />);
     expect(await screen.findByText(/Error: Network Error/)).toBeInTheDocument();
