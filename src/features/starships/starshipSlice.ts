@@ -6,11 +6,11 @@ import type {
 } from '../../components/utils/types.ts';
 
 interface StarshipsState {
-  starShipsList: StarshipClientSide[];
+  starShipsList?: StarshipClientSide[];
   selected: Record<string, StarshipClientSide>;
-  loading: boolean;
-  next: string | null;
-  previous: string | null;
+  loading?: boolean;
+  next?: string | null;
+  previous?: string | null;
 }
 
 const initialState: StarshipsState = {

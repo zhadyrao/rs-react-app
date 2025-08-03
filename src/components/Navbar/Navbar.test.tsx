@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import Navbar from './Navbar';
-import { ThemeProvider } from '../ThemeContext/ThemeContext'; // adjust path as needed
+import ThemeProvider from '../ThemeContext/ThemeContext.tsx';
 
 describe('Navbar', () => {
   const renderWithProviders = () =>
