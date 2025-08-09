@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { starshipsApi } from './components/services/starships.ts';
 import { starshipSlice } from './features/starships/starshipSlice.ts';
 
 export const store = configureStore({
   reducer: {
-    starshipSlice: starshipSlice.reducer,
+    [starshipsApi.reducerPath]: starshipsApi.reducer,
+    selectedStarships: starshipSlice.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(starshipsApi.middleware),
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;

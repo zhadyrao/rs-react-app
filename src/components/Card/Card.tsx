@@ -9,7 +9,7 @@ interface Props {
 const Card: React.FC<Props> = ({ starship }) => {
   const dispatch = useAppDispatch();
   const selected = useAppSelector(
-    (state) => state.starshipSlice.selected[starship.id]
+    (state) => state.selectedStarships.selected[starship.id]
   );
   return (
     <div className="border rounded p-4 shadow space-y-2">

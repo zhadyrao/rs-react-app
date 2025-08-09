@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
 import LoadingBar from '../LoadingBar/LoadingBar.tsx';
 import { useNavigate } from 'react-router-dom';
-import { fetchStarships } from '../../features/starships/starshipSlice.ts';
-import { useAppDispatch, useAppSelector } from '../utils/hooks.ts';
 import Pagination from '../Pagination/Pagination.tsx';
 import Card from '../Card/Card.tsx';
 import Flyout from '../Flyout/Flyout.tsx';
+import { useGetStarshipsQuery } from '../services/starships.ts';
 
 interface ResultsListProps {
   currentPage: string;
@@ -13,26 +11,19 @@ interface ResultsListProps {
 
 const ResultsList = ({ currentPage }: ResultsListProps) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { starShipsList, loading, next, previous } = useAppSelector(
-    (state) => state.starshipSlice
-  );
-
-  useEffect(() => {
-    dispatch(fetchStarships(currentPage));
-  }, [dispatch, currentPage]);
+  const { data, isLoading } = useGetStarshipsQuery(currentPage);
 
   const handlePageChange = (newPage: number) => {
     navigate(`/${newPage}`);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingBar />;
   }
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {starShipsList?.map((starship, index) => (
+        {data?.results?.map((starship, index) => (
           <div
             key={index}
             onClick={() => navigate(`/${currentPage}/${starship.id}`)}
@@ -43,8 +34,8 @@ const ResultsList = ({ currentPage }: ResultsListProps) => {
         ))}
       </div>
       <Pagination
-        next={next}
-        previous={previous}
+        next={data?.next}
+        previous={data?.previous}
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
