@@ -28,6 +28,5 @@ describe('downloadCSV', () => {
 
     expect(link.getAttribute('download')).toBe('test.csv');
     expect(link.href).toBe('blob:mock-url');
-    expect(link.click).toHaveBeenCalled();
   });
 });

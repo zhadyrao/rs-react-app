@@ -23,7 +23,7 @@ const Card: React.FC<Props> = ({ starship }) => {
       </label>
       <h2 className="font-semibold text-lg">{starship.name}</h2>
       <p>
-        {`${starship.description} was created ${starship.description}. It costsdmfd`}
+        {`${starship.name} was created ${starship.description}. Its id is ${starship.id}`}
       </p>
     </div>
   );
