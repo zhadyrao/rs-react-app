@@ -5,8 +5,9 @@ import { unselectAll } from '../../features/starships/starshipSlice.ts';
 
 const Flyout: React.FC = () => {
   const dispatch = useAppDispatch();
+
   const selectedItems = useAppSelector((state) =>
-    Object.values(state.starshipSlice.selected)
+    Object.values(state.selectedStarships.selected)
   );
 
   if (selectedItems.length === 0) return null;
